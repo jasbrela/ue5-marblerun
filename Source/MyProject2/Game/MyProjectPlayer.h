@@ -6,6 +6,10 @@
 #include "GameFramework/Pawn.h"
 #include "MyProjectPlayer.generated.h"
 
+// Forward declarations: "a little bit cheaper (than #include), a little bit lightweight"
+class UCameraComponent;
+class USpringArmComponent;
+
 UCLASS()
 class MYPROJECT2_API AMyProjectPlayer : public APawn
 {
@@ -19,11 +23,30 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-public:	
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
+	// Define Components
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Components") // These "UPROPERTY" seems similar to the unity attributes
+	UStaticMeshComponent* Mesh;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Components")
+	USpringArmComponent* SpringArm;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Components")
+	UCameraComponent* Camera;
 
+	// Variables
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float MoveForce = 500.0f;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float JumpImpulse = 1000.0f;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int32 MaxJumpCount = 1;
+
+public:	
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
+	// Functions
+	void MoveRight(float value); // between -1 and 1.	
+	void MoveForward(float value);
+	void Jump(float value);
+	
+	int32 JumpCount = 1;
 };
